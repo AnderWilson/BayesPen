@@ -1,0 +1,10 @@
+Package: BayesPen
+Type: Package
+Title: Bayesian Penalized Credible Regions
+Version: 1.2
+Date: 2015-03-12
+Author: Ander Wilson, Howard D. Bondell, and Brian J. Reich
+Maintainer: Ander Wilson <awilson@hsph.harvard.edu>
+Description: Fits the Bayesian penalized credible region variable and confounder selection methods.
+License: GPL (>= 2)
+Depends: lars, MCMCpack, SuppDists

@@ -1,0 +1,104 @@
+---
+title: "R Package BayesPen: Bayesian Penalized Credible Regions"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+---
+
+## Overview
+The **BayesPen** package implements variable and confounder selection via penalized credible regrions. The methods are detailed in the following papers
+
+Bondell HD, Reich BJ. 2012. Consistent high-dimensional Bayesian variable selection via penalized credible regions. *J. Am. Stat. Assoc.* 107: 1610–1624.
+
+Wilson A, Reich BJ. 2014. Confounder selection via penalized credible regions. *Biometrics* 70: 852–861.
+
+The citation for this package is 
+
+Ander Wilson, Howard D. Bondell and Brian J. Reich (2015). BayesPen: Bayesian Penalized Credible Regions. R package version 1.2.
+
+## Installation
+
+The **BayesPen** package can be installed using devtools.
+```
+library(devtools)
+install_github(repo="BayesPen", username="AnderWilson")
+library(BayesPen)
+```
+
+## An Example
+First load the R package.
+```{r}
+library(BayesPen)
+```
+
+
+### Variable Selection via Penalized Credible Regions
+Simulate data.
+```{r}
+set.seed(1234)
+dat <- SimExample(500,model="BR1")
+X <- dat$X
+y <- dat$y
+```
+
+Fit the full model assuming flat priors on beta
+```{r}
+fit1 <- lm(y~X-1)
+betahat <- coef(fit1)
+cov <- vcov(fit1)
+```
+
+Find solution path
+```{r}
+fit.BayesPen <- BayesPen(beta=betahat, beta_cov=cov)
+```
+
+Refit the model.
+```{r}
+refit <- BayesPen.refit(y,X,fit.BayesPen)
+```
+
+Plot the solution path.
+```{r}
+BayesPen.plot(refit)
+```
+
+
+### Confounder Selection via Penalized Credible Regions
+```{r}
+set.seed(1234)
+dat <- SimExample(500,model="WPD2")
+X <- dat$X
+U <- dat$U
+W <- cbind(X,U)
+y <- dat$y
+```
+
+Fit the full outcome model assuming flat priors on beta.
+```{r}
+fit1 <- lm(y~W-1)
+betahat <- coef(fit1)
+cov <- vcov(fit1)
+```
+
+Fit the full exposure model assuming flat priors on beta.
+```{r}
+fit2 <- lm(X~U-1)
+gammahat <- coef(fit2)
+```
+
+Find solution path.
+```{r}
+fit.BayesPen <- BayesPen(beta=betahat, beta_cov=cov, confounder.weights=c(0,gammahat), force=1)
+```
+
+Refit the outcome model.
+```{r}
+refit <- BayesPen.refit(y,W,fit.BayesPen)
+```
+
+Plot the solution path.
+```{r}
+BayesPen.plot(refit)
+```
