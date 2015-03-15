@@ -1,5 +1,5 @@
 ---
-title: "R Package BayesPen: Bayesian Penalized Credible Regions"
+title: "BayesPen: Bayesian Penalized Credible Regions"
 output:
   html_document:
     theme: flatly
